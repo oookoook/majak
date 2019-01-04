@@ -1,0 +1,40 @@
+@font-face {
+    font-family: 'Merkur';
+    src: url('../assets/merkur.otf') format('truetype');
+ }
+ @font-face {
+    font-family: 'Techno28';
+    src: url('../assets/techno28.ttf') format('truetype');
+ }
+
+ body {
+     font-size: 2rem;
+     /* background-color: #000; */
+     background: url('../assets/background.gif') repeat;
+     color: crimson;
+ }
+ 
+ h1,h2,h3 {
+     font-family: 'Merkur';
+     color: crimson; 
+ }
+
+ h1 {
+     font-size: 4rem;
+ }
+
+ h2 {
+    font-size: 3rem;
+ }
+
+ h3 {
+    font-size: 2rem;
+ }
+
+ .robot {
+    font-family: 'Techno28';
+ }
+
+ .status {
+     font-size: 1rem;
+ }

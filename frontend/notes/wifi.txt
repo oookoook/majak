@@ -1,0 +1,143 @@
+
+user: pi, pass: padouch
+
+DHCP:
+http://qcktech.blogspot.cz/2012/08/raspberry-pi-as-router.html
+http://itsacleanmachine.blogspot.cz/2012/11/raspberry-router.html
+
+sudo apt-get install isc-dhcp-server
+sudo nano /etc/dhcp/dhcpd.conf
+
+subnet 192.168.0.0 netmask 255.255.255.0 {
+range 192.168.0.10 192.168.0.250;
+option broadcast-address 192.168.0.255;
+option routers 192.168.0.1;
+default-lease-time 600;
+max-lease-time 7200;
+option domain-name "majak";
+option domain-name-servers 192.168.0.1;
+}
+
+hostapd:
+http://itsacleanmachine.blogspot.cz/2013/02/wifi-access-point-with-raspberry-pi.html
+https://www.raspberrypi.org/forums/viewtopic.php?t=137932&p=920070#p919980
+
+sudo apt-get remove hostapd -y
+sudo apt-get install hostapd -y
+
+
+sudo nano /etc/rc.local
+
+sudo hostapd -B /etc/hostapd/hostapd.conf
+
+sudo nano /etc/hostapd/hostapd.conf
+
+interface=wlan0
+#driver=rtl871xdrv
+ssid=DietPi-HotSpot
+hw_mode=g
+channel=3
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=0
+# wpa=2
+# wpa_passphrase=vitejclovece
+# wpa_key_mgmt=WPA-PSK
+# wpa_pairwise=TKIP
+# rsn_pairwise=CCMP
+
+statická IP:
+https://www.raspberrypi.org/forums/viewtopic.php?t=140252
+
+sudo nano /etc/dhcpcd.conf
+
+interface wlan0
+static ip_address=192.168.0.1/24
+
+DNS
+https://www.1and1.com/digitalguide/server/configuration/how-to-make-your-raspberry-pi-into-a-dns-server/
+
+sudo apt-get install bind9 bind9utils dnsutils
+
+KONFIGURACE ODSUD NENI AKTUALNI
+
+sudo nano /etc/bind/named.conf.local
+
+zone "majak.wan" IN {
+    type master;
+    file "/etc/bind/db.majak.wan";
+};
+zone "0.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.rev.0.168.192.in-addr.arpa";
+};
+
+sudo nano /etc/bind/db.majak.wan
+
+majak.wan. IN SOA majak-1823.majak.wan. hostmaster.majak.wan. (
+    2018052501 ; serial
+    8H ; refresh
+    4H ; retry
+    4W ; expire
+    1D ; minimum
+)
+majak.wan. IN NS majak-1823.majak.wan.
+majak.wan. IN MX 10 majak-1823.majak.wan.
+localhost    IN A 127.0.0.1
+majak-1823   IN A 192.168.0.1
+
+sudo nano /etc/bind/db.rev.0.168.192.in-addr.arpa
+
+@ IN SOA majak-1823.majak.wan. hostmaster.majak.wan. (
+    2018052501 ; serial
+    8H ; refresh
+    4H ; retry
+    4W ; expire
+    1D ; minimum
+)
+          IN NS majak-1823.majak.wan.
+1         IN PTR majak-1823.majak.wan.
+
+ODSUD FUNKCNI KONFIGURACE
+
+https://serverfault.com/questions/347295/how-to-configure-bind9-to-be-a-local-dns-only-with-no-internet-access
+
+sudo nano /etc/bind/named.conf.default-zones
+
+// prime the server with knowledge of the root servers
+zone "." {
+        type maser;
+        file "/etc/bind/db.fake.root";
+};
+
+... zbytek nechat
+
+sudo nano /etc/bind/named.conf
+
+zakomentovat include local
+
+sudo nano /etc/bind/db.fake.root
+
+$TTL    300
+.               IN      SOA majak-1823. hostmaster.majak.wan. (
+                        20120101 1800 900 604800 86400
+                )
+.               IN      NS      majak-1823
+majak-1823      IN      A       127.0.0.1
+
+$ORIGIN majak.wan.
+majak-1823      IN      A       192.168.0.1
+
+
+
+
+
+
+sudo service bind9 restart
+sudo update-rc.d bind9 defaults
+
+Další linky:
+http://itsacleanmachine.blogspot.cz/2013/02/wifi-access-point-with-raspberry-pi.html
+https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/overview
+https://www.root.cz/cwanky/wpasupplicant-a-hostapd-konfigurace/

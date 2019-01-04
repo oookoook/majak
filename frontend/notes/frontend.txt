@@ -1,0 +1,24 @@
+﻿https://webpack.js.org/guides/getting-started/
+https://webpack.js.org/guides/asset-management/
+
+vytvořit adresář
+
+npm init -y
+npm install --save webpack webpack-cli bootstrap vue popper.js jquery style-loader css-loader
+
+
+
+upravit soubory podle návodu
+
+pak jeste toto: https://itnext.io/vuejs-and-webpack-4-from-scratch-part-1-94c9c28a534a
+
+- config Vue, babel
+
+npm run build
+
+dalsi tutorialy: 
+https://medium.com/codingthesmartway-com-blog/vue-js-2-quickstart-tutorial-2017-246195cfbdd2
+https://appdividend.com/2018/03/12/how-to-setup-vue-js-with-webpack-4-example/
+
+audio + vue + webpack
+https://stackoverflow.com/questions/41921081/audio-assets-not-found-in-vue-webpack
